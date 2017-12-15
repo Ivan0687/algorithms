@@ -7,18 +7,36 @@ import ivan.boiko.algorithms.filling.exceptions.NullAmountException;
 
 import java.util.*;
 
+/**
+ * Постановка задачи:
+ * Написать программу которая должна определить,
+ * сколькими способами можно залить воду в N литровый резервуар,
+ * используя ведра литража: 10л, 5л, 2л, 1л.
+ * <p>
+ * Входящие данные - случайная выборка от 10 до 200 литров.
+ * <p>
+ * Примерный формат вывода информации:
+ * n=6
+ * 6 по 1л
+ * 4 по 1л + 1 по 2л
+ * 2 по 1л + 2 по 2л
+ * 3 по 2л
+ * 1 по 5л + 1 по 1л
+ * <p>
+ * Итого, при n=6 наш ответ будет 5.
+ */
 public class Vedra {
 
     public static void main(String[] args) {
 
-//        int amount = new Random().nextInt(100);
-        int amount = 200;
+        int amount = new Random().nextInt(200);
 
         List<Integer> volumes = Arrays.asList(10, 5, 2, 1);
 
-        long begin = System.nanoTime();
+        long start = System.nanoTime();
         List<Map<Integer, Integer>> variants = getVariants(amount, volumes);
-        System.out.println("time = " + (System.nanoTime() - begin));
+        long finish = System.nanoTime();
+
 
         for (Map<Integer, Integer> map : variants) {
             for (Map.Entry<Integer, Integer> solution : map.entrySet()) {
@@ -28,6 +46,7 @@ public class Vedra {
         }
 
         System.out.println("For amount = " + amount + " total variants = " + variants.size());
+        System.out.println("time = " + (finish - start) + " nano seconds");
 
     }
 
@@ -44,6 +63,8 @@ public class Vedra {
         Map<Integer, Integer> solution = new HashMap<>();
 
         calculate(amount, volumes, solutions, solution);
+
+        if (solutions.size() == 0) throw new NoProperFillingException();
 
         return solutions;
     }
@@ -62,17 +83,20 @@ public class Vedra {
 
         } else if (volumes.size() > 1) {
 
-            List<Integer> nextVolumes = volumes.subList(1, volumes.size());
+            if (amount > Collections.min(volumes)) {
 
-            for (int i = amount / firstVolume; i >= 0; i--) {
+                List<Integer> nextVolumes = volumes.subList(1, volumes.size());
 
-                Map<Integer, Integer> nextSolution = new HashMap<>(solution);
+                for (int i = amount / firstVolume; i >= 0; i--) {
 
-                nextSolution.put(firstVolume, i);
+                    Map<Integer, Integer> nextSolution = new HashMap<>(solution);
 
-                int nextAmount = amount - i * firstVolume;
+                    nextSolution.put(firstVolume, i);
 
-                calculate(nextAmount, nextVolumes, solutions, nextSolution);
+                    int nextAmount = amount - i * firstVolume;
+
+                    calculate(nextAmount, nextVolumes, solutions, nextSolution);
+                }
             }
         }
     }

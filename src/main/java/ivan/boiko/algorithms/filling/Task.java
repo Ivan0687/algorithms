@@ -14,7 +14,7 @@ public class Task {
 
     public static void main(String[] args) {
 
-        int amount = 200;
+        int amount = 57;
 //        int amount = new Random().nextInt(100);
 
         long begin = System.nanoTime();
