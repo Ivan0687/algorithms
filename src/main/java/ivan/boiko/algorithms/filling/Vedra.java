@@ -83,7 +83,7 @@ public class Vedra {
 
         } else if (volumes.size() > 1) {
 
-            if (amount > Collections.min(volumes)) {
+            if (amount >= Collections.min(volumes)) {
 
                 List<Integer> nextVolumes = volumes.subList(1, volumes.size());
 
